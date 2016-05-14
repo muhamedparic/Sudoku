@@ -32,6 +32,12 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Board.hpp" />
+		<Unit filename="Color.hpp" />
+		<Unit filename="Game.hpp" />
+		<Unit filename="HighScoreTable.hpp" />
+		<Unit filename="Key.hpp" />
+		<Unit filename="View.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
