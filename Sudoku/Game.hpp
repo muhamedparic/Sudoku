@@ -25,6 +25,7 @@ class Game
     void load_views();
     void refresh_display();
     void move_cursor(Key key);
+    void quit();
 
 public:
 

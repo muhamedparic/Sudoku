@@ -6,7 +6,7 @@ enum class View
     Playing,
     InputName,
     HighScores,
-    SelectColor
+    SelectDifficulty
 };
 
 #endif // VIEW_HPP_INCLUDED
