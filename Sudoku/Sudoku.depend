@@ -3,7 +3,7 @@
 	<iostream>
 	"Game.hpp"
 
-1463266481 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\game.hpp
+1463311671 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\game.hpp
 	"View.hpp"
 	"Key.hpp"
 	"Color.hpp"
@@ -18,7 +18,7 @@
 
 1463266085 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\color.hpp
 
-1463267265 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.hpp
+1463308160 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.hpp
 	"Color.hpp"
 	<array>
 	<vector>
@@ -27,9 +27,12 @@
 1463307101 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\highscoretable.hpp
 	<string>
 
-1463306834 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.cpp
+1463309355 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.cpp
 	"Board.hpp"
 
 1463306880 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\game.cpp
 	"Game.hpp"
+
+1463307092 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\highscoretable.cpp
+	"HighScoreTable.hpp"
 

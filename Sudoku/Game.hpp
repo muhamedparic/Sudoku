@@ -21,7 +21,6 @@ class Game
     View current_view;
     std::string playing_view, input_name_view, high_scores_view, select_difficulty_view;
 
-    void initialize();
     void read_user_input();
     void load_views();
     void refresh_display();

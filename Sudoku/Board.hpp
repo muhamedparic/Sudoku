@@ -7,9 +7,12 @@
 #include <vector>
 #include <string>
 
+template <typename T>
+using SudokuGrid = std::array<std::array<T, 9>, 9>;
+
 class Board
 {
-    bool won, solved;
+    bool won, finished;
     std::array<std::array<int, 9>, 9> current_state;
     std::array<std::array<int, 9>, 9> solved_state;
     std::array<std::array<Color, 9>, 9> colors;
@@ -18,13 +21,15 @@ class Board
 
 public:
 
+    Board();
     void load_from_json(std::string json_string);
     void load_from_file(std::string filename = "save.json");
     bool game_won();
+    bool game_finished();
     std::vector<int> get_legal_inputs(int row, int column);
     void solve();
-    const std::array<std::array<int, 9>, 9> &get_numbers();
-    const std::array<std::array<Color, 9>, 9> &get_colors();
+    const SudokuGrid<int> &get_numbers();
+    const SudokuGrid<Color> &get_colors();
     void input(int row, int column, int number);
     void save(std::string filename = "save.json");
 };
