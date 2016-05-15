@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1463266497 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\main.cpp
+	<iostream>
+	"Game.hpp"
+
+1463266481 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\game.hpp
+	"View.hpp"
+	"Key.hpp"
+	"Color.hpp"
+	"Board.hpp"
+	"HighScoreTable.hpp"
+	<string>
+	<array>
+
+1463265981 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\view.hpp
+
+1463265782 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\key.hpp
+
+1463266085 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\color.hpp
+
+1463267265 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.hpp
+	"Color.hpp"
+	<array>
+	<vector>
+	<string>
+
+1463307101 c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\highscoretable.hpp
+	<string>
+
+1463306834 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\board.cpp
+	"Board.hpp"
+
+1463306880 source:c:\users\muhamed\desktop\cpp\actual cpp\sudoku\sudoku\sudoku\game.cpp
+	"Game.hpp"
+

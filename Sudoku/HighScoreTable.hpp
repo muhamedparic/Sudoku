@@ -1,6 +1,8 @@
 #ifndef HIGHSCORETABLE_HPP_INCLUDED
 #define HIGHSCORETABLE_HPP_INCLUDED
 
+#include <string>
+
 class HighScoreTable
 {
     const int scores_saved = 10;
