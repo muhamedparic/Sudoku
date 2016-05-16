@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1463397821 source:c:\users\suser\desktop\sudoku\sudoku-server\smallmain.cpp
+	<iostream>
+	<vector>
+	"Sudoku.h"
+
+1463397904 c:\users\suser\desktop\sudoku\sudoku-server\sudoku.h
+	<iostream>
+	<vector>
+	<string>
+	<fstream>
+
