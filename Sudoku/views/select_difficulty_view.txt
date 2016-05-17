@@ -1,10 +1,11 @@
+Select difficulty:
 
- [Level 1]
+ [    Trivial    ]
  
- [Level 2]
+ [   Very easy   ]
  
- [Level 3]
+ [  Challenging  ]
  
- [Level 4]
+ [ Somewhat evil ]
  
- [Level 5]
+ [ Insanely evil ]

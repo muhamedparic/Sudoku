@@ -1,0 +1,5 @@
+High scores
+[    Trivial    ] [   Very easy   ] [  Challenging  ] [ Somewhat evil ] [ Insanely evil ]
+
+Name                     Time
+             
