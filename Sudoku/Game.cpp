@@ -97,7 +97,9 @@ void Game::refresh_display()
            // 1. korak
            printw("%s", select_difficulty_view.c_str());
            // 3. korak
-           
+           attron(COLOR_PAIR(1)); // Crni tekst sa bijelim backgroundom
+           mvprintw(2 + 2 * cursor_position.row, 2, "%s", button_text[current_view][cursor_position.row].c_str());
+           attroff(COLOR_PAIR(1));
            break;
        case View::InputName:
            // 1. korak
@@ -106,10 +108,65 @@ void Game::refresh_display()
            // TODO: Poslati ime na leaderboard
            break;
        case View::Playing:
+           // 1. korak
+           printw("%s", playing_view.c_str());
+           // 2. korak
+           for (int brow = 0; brow < 3; brow++)
+           {
+               for (int bcol = 0; bcol < 3; bcol++)
+               {
+                   for (int row = 0; row < 3; row++)
+                   {
+                       for (int col = 0; col < 3; col++)
+                       {
+                           Color color = board.get_colors()[3 * brow + row][3 * bcol + col];
+                           int number = board.get_numbers()[3 * brow + row][3 * bcol + col];
+                           int ypos = 2 + 5 * brow + row;
+                           int xpos = 1 + 14 * bcol + 4 * col;
+                           
+                           switch (color)
+                           {
+                               case Color::White:
+                                   mvprintw(ypos, xpos, "%d", number);
+                                   break;
+                               case Color::Yellow:
+                                   attron(COLOR_PAIR(6));
+                                   mvprintw(ypos, xpos, "%d", number);
+                                   attroff(COLOR_PAIR(6));
+                                   break;
+                               case Color::Red:
+                                   attron(COLOR_PAIR(2));
+                                   mvprintw(ypos, xpos, "%d", number);
+                                   attroff(COLOR_PAIR(2));
+                                   break;
+                               case Color::Green:
+                                   attron(COLOR_PAIR(4));
+                                   mvprintw(ypos, xpos, "%d", number);
+                                   attroff(COLOR_PAIR(4));
+                           }                
+                       }
+                   }
+               }
+           }
+           // 3. korak
+           if (cursor_position.column < 9) // Na nekom od brojeva, ne na button-u sa strane
+           {
+               Color color = board.get_colors()[cursor_position.row][cursor_position.column];
+               int number = board.get_numbers()[cursor_position.row][cursor_position.column];
+               int ypos = 2 + 5 * (cursor_position.row / 3) + (cursor_position.row % 3);
+               int xpos = 1 + 14 * (cursor_position.column / 3) + 4 *  (cursor_position.column % 3);
+
+               // TODO: Zavrsiti ovo
+           }
+           else
+           {
+               // TODO: Implementirati inverziju boje za dugmad
+           }
            break;
        case View::HighScores:
            break;    
    }
+   refresh();
 }
 
 void Game::move_cursor(Key key)
@@ -137,9 +194,17 @@ void Game::run()
 	start_color();
 	noecho();
 	curs_set(0);
-	init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    
-	
+    init_color(4, 0, 1000, 1000); // Suprotno od crvene 
+	init_color(5, 1000, 0, 1000); // Suprotno od zelene
+    init_color(6, 0, 0, 1000); // Suprotno od zute
+    init_pair(1, COLOR_BLACK, COLOR_WHITE); // Invertovana bijela
+    init_pair(2, 1, COLOR_BLACK); // Crvena
+    init_pair(3, 4, COLOR_WHITE); // Invertovana crvena
+    init_pair(4, 2, COLOR_BLACK); // Zelena
+    init_pair(5, 5, COLOR_WHITE); // Invertovana zelena
+    init_pair(6, 3, COLOR_BLACK); // Zuta
+    init_pair(7, 6, COLOR_WHITE); // Inverovana zuta
+
     load_views();
 	current_view = View::SelectDifficulty;
 	cursor_position.row = cursor_position.column = 0;

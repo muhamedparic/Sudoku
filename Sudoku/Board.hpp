@@ -13,9 +13,9 @@ using SudokuGrid = std::array<std::array<T, 9>, 9>;
 class Board
 {
     bool won, finished;
-    std::array<std::array<int, 9>, 9> current_state;
-    std::array<std::array<int, 9>, 9> solved_state;
-    std::array<std::array<Color, 9>, 9> colors;
+    SudokuGrid<int> current_state;
+    SudokuGrid<int> solved_state;
+    SudokuGrid<Color> colors;
 
     bool input_legal(int row, int column);
 
