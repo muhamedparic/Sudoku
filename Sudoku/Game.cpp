@@ -113,7 +113,7 @@ void Game::read_user_input()
 void Game::fetch_board(int difficulty)
 {
     // NOTE: python ili python3
-    //system((std::string("python3 ") + server_ip + std::string(" ") + std::string(1, difficulty + '0')).c_str()); DEBUG
+    //system((std::string("sudo python3 ") + server_ip + std::string(" ") + std::string(1, difficulty + '0')).c_str());
     try
     {
         std::ifstream fin("board.txt");
@@ -430,9 +430,9 @@ Game::Game(int argc, char **argv)
     for (int i = 1; i < argc; i++)
     {
         std::string arg(argv[i]);
-        if (arg.length() > 11 && arg.substr(0, 11) == std::string("-server-ip="))
+        if (arg.length() > 10 && arg.substr(0, 10) == std::string("-server-ip="))
         {
-            server_ip = arg.substr(11);
+            server_ip = arg.substr(10);
             break;
         }
     }
