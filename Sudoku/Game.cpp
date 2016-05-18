@@ -322,9 +322,9 @@ void Game::run()
 	noecho();
 	curs_set(0);
     keypad(stdscr, TRUE);
-    init_color(4, 0, 1000, 1000); // Suprotno od crvene 
-	init_color(5, 1000, 0, 1000); // Suprotno od zelene
-    init_color(6, 0, 0, 1000); // Suprotno od zute
+    init_color(4, 0, 1000, 0); // Suprotno od crvene 
+	init_color(5, 1000, 0, 0); // Suprotno od zelene
+    init_color(6, 1000, 0, 1000); // Suprotno od zute
     init_pair(1, COLOR_BLACK, COLOR_WHITE); // Invertovana bijela
     init_pair(2, 1, COLOR_BLACK); // Crvena
     init_pair(3, 4, COLOR_WHITE); // Invertovana crvena
