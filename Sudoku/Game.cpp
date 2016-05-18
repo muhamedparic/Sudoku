@@ -10,13 +10,33 @@
 
 void Game::read_user_input()
 {
-	int key = getch();
-	if (key == 'q')
-		quit();
-	else if (key == 65 && cursor_position.row > 0)
-		cursor_position.row--;
-	else if (key == 66 && cursor_position.row < 4)
-		cursor_position.row++;
+	wchar_t key = getch(); // Move to move_cursor
+    if (key == 'q')
+        quit();
+    switch (current_view)
+    {
+        case View::Playing:
+            switch (key)
+            {
+                case KEY_UP: // UP
+                    if (cursor_position.row > 0)
+                        cursor_position.row--;
+                    break;
+                case KEY_DOWN: // DOWN
+                    if (cursor_position.row < 8)
+                        cursor_position.row++;
+                    break;
+                case KEY_LEFT: // LEFT
+                    if (cursor_position.column > 0)
+                        cursor_position.column--;
+                    break;
+                case KEY_RIGHT: // RIGHT
+                    if (cursor_position.column < 8)
+                        cursor_position.column++;
+                    break;
+            }
+            break;
+    }
 }
 
 void Game::load_views()
@@ -95,7 +115,7 @@ void Game::refresh_display()
    {
        case View::SelectDifficulty:
            // 1. korak
-           printw("%s", select_difficulty_view.c_str());
+           mvprintw(0, 0, "%s", select_difficulty_view.c_str());
            // 3. korak
            attron(COLOR_PAIR(1)); // Crni tekst sa bijelim backgroundom
            mvprintw(2 + 2 * cursor_position.row, 2, "%s", button_text[current_view][cursor_position.row].c_str());
@@ -103,13 +123,13 @@ void Game::refresh_display()
            break;
        case View::InputName:
            // 1. korak
-           printw("%s", input_name_view.c_str());
+           mvprintw(0, 0, "%s", input_name_view.c_str());
            std::cin >> name;
            // TODO: Poslati ime na leaderboard
            break;
        case View::Playing:
            // 1. korak
-           printw("%s", playing_view.c_str());
+           mvprintw(0, 0, "%s", playing_view.c_str());
            // 2. korak
            for (int brow = 0; brow < 3; brow++)
            {
@@ -156,7 +176,29 @@ void Game::refresh_display()
                int ypos = 2 + 5 * (cursor_position.row / 3) + (cursor_position.row % 3);
                int xpos = 1 + 14 * (cursor_position.column / 3) + 4 *  (cursor_position.column % 3);
 
-               // TODO: Zavrsiti ovo
+               switch (color)
+               {
+                   case Color::White:
+                       attron(COLOR_PAIR(1));
+                       mvprintw(ypos, xpos, "%d", number);
+                       attroff(COLOR_PAIR(1));
+                       break;
+                   case Color::Yellow:
+                       attron(COLOR_PAIR(7));
+                       mvprintw(ypos, xpos, "%d", number);
+                       attroff(COLOR_PAIR(7));
+                       break;
+                   case Color::Red:
+                       attron(COLOR_PAIR(3));
+                       mvprintw(ypos, xpos, "%d", number);
+                       attroff(COLOR_PAIR(3));
+                       break;
+                   case Color::Green:
+                       attron(COLOR_PAIR(5));
+                       mvprintw(ypos, xpos, "%d", number);
+                       attroff(COLOR_PAIR(5));
+                       break;
+               }
            }
            else
            {
@@ -194,6 +236,7 @@ void Game::run()
 	start_color();
 	noecho();
 	curs_set(0);
+    keypad(stdscr, TRUE);
     init_color(4, 0, 1000, 1000); // Suprotno od crvene 
 	init_color(5, 1000, 0, 1000); // Suprotno od zelene
     init_color(6, 0, 0, 1000); // Suprotno od zute
@@ -206,8 +249,9 @@ void Game::run()
     init_pair(7, 6, COLOR_WHITE); // Inverovana zuta
 
     load_views();
-	current_view = View::SelectDifficulty;
-	cursor_position.row = cursor_position.column = 0;
+	//current_view = View::SelectDifficulty;
+	current_view = View::Playing;
+    cursor_position.row = cursor_position.column = 0;
 
 	while (true)
 	{
