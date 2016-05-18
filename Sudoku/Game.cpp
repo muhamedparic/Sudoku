@@ -10,33 +10,45 @@
 
 void Game::read_user_input()
 {
-	wchar_t key = getch(); // Move to move_cursor
-    if (key == 'q')
+	wchar_t key_raw = getch(); // Move to move_cursor
+    if (key_raw == 'q') //
         quit();
-    switch (current_view)
+    
+    Key key;
+
+    if (key_raw >= '0' && key_raw <= '9')
     {
-        case View::Playing:
-            switch (key)
-            {
-                case KEY_UP: 
-                    if (cursor_position.row > 0)
-                        cursor_position.row--;
-                    break;
-                case KEY_DOWN:
-                    if (cursor_position.row < 8)
-                        cursor_position.row++;
-                    break;
-                case KEY_LEFT:
-                    if (cursor_position.column > 0)
-                        cursor_position.column--;
-                    break;
-                case KEY_RIGHT:
-                    if (cursor_position.column < 8)
-                        cursor_position.column++;
-                    break;
-            }
-            break;
+        board.input(cursor_position.row, cursor_position.column, key_raw - '0');
     }
+    else
+    {
+        switch (key_raw)
+        {
+            case KEY_UP:
+                key = Key::Up;
+                break;
+            case KEY_DOWN:
+                key = Key::Down;
+                break;
+            case KEY_LEFT:
+                key = Key::Left;
+                break;
+            case KEY_RIGHT:
+                key = Key::Right;
+                break;
+            case KEY_ENTER: // Mozda nece raditi
+                key = Key::Enter;
+                break;
+            case 'q':
+                key = Key::Esc;
+                break;
+            case KEY_DC:
+                key = Key::Delete;
+                break;
+        }
+    }
+    move_cursor(key);
+    // TODO: Klikovi na dugmad
 }
 
 void Game::load_views()
@@ -65,30 +77,14 @@ void Game::load_views()
 
 void Game::refresh_display()
 {
-	/*
-    std::array<std::string, 5> tmp_strs = {"Level 1", "Level 2", "Level 3", "Level 4", "Level 5"}; //
-
-	clear();
-	switch (current_view)
-	{
-		case View::SelectDifficulty:
-			printw("%s", select_difficulty_view.c_str());
-		
-			attron(COLOR_PAIR(1));
-			mvprintw(1 + 2 * cursor_position.row, 2, "%s", tmp_strs[cursor_position.row].c_str());
-			attroff(COLOR_PAIR(1));
-			break;
-	}
-    */
-
-    const char *raw_text_difficulty[] = {
+	const char *raw_text_difficulty[] = {
     "    Trivial    ",
     "   Very easy   ",
     " Somewhat evil ",
     " Insanely evil "};
     
     const char *raw_text_playing[] = {
-    "     New      ",
+    "     New     ",
     "    Solve    ",
     " High scores ",
     " Save & Quit "};
@@ -200,9 +196,12 @@ void Game::refresh_display()
                        break;
                }
            }
-           else
+           else // Na button-u
            {
-               // TODO: Implementirati inverziju boje za dugmad
+               attron(COLOR_PAIR(1));
+               mvprintw((cursor_position.row < 3) ? 2 + cursor_position.row : 14, 41, "%s", 
+                   button_text[View::Playing].at(cursor_position.row).c_str());
+               attroff(COLOR_PAIR(1));
            }
            break;
        case View::HighScores:
@@ -213,7 +212,93 @@ void Game::refresh_display()
 
 void Game::move_cursor(Key key)
 {
-
+    switch (key)
+    {
+        case Key::Up:
+            switch (current_view)
+            {
+                case View::Playing:
+                    if (cursor_position.row > 0) // NOTE: Zadnji button ima row 3, ne 8
+                        cursor_position.row--;
+                    break;
+                case View::InputName:
+                    break;
+                case View::HighScores:
+                    break;
+                case View::SelectDifficulty:
+                    if (cursor_position.row > 0)
+                        cursor_position.row--;
+                    break;
+            }
+            break;
+        case Key::Down:
+            switch (current_view)
+            {
+                case View::Playing:
+                    if (cursor_position.column < 9 && cursor_position.row < 8)
+                        cursor_position.row++;
+                    else if (cursor_position.column == 9 && cursor_position.row < 3)
+                        cursor_position.row++;
+                    break;
+                case View::InputName:
+                    break;
+                case View::HighScores:
+                    break;
+                case View::SelectDifficulty:
+                    if (cursor_position.row < 4)
+                        cursor_position.row++;
+                    break;
+            }
+            break;
+        case Key::Left:
+            switch (current_view)
+            {
+                case View::Playing:
+                    if (cursor_position.column > 0 && (cursor_position.column != 9 || cursor_position.row != 3))
+                        cursor_position.column--;
+                    else if (cursor_position.column == 9 && cursor_position.row == 3)
+                    {
+                        cursor_position.row = 8;
+                        cursor_position.column = 8;
+                    }
+                    break;
+                case View::InputName:
+                    break;
+                case View::HighScores:
+                    if (cursor_position.column > 0)
+                        cursor_position.column--;
+                    break;
+                case View::SelectDifficulty:
+                    break;
+            }
+            break;
+        case Key::Right:
+            switch (current_view)
+            {
+                case View::Playing:
+                    if (cursor_position.column < 8)
+                        cursor_position.column++;
+                    else if (cursor_position.column == 8 && cursor_position.row < 3)
+                        cursor_position.column++;
+                    else if (cursor_position.column == 8 && cursor_position.row == 8)
+                    {
+                        cursor_position.row = 3;
+                        cursor_position.column = 9;
+                    }
+                    break;
+                case View::InputName:
+                    break;
+                case View::HighScores:
+                    if (cursor_position.column < 4)
+                        cursor_position.column++;
+                    break;
+                case View::SelectDifficulty:
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 Game::Game(int argc, char **argv)

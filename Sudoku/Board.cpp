@@ -56,7 +56,7 @@ const SudokuGrid<Color> &Board::get_colors()
 
 }
 
-void Board::input(int row, int column, int number)
+void Board::input(int row, int column, int number) // NOTE: Provjeriti validnost reda i kolone
 {
 
 }
