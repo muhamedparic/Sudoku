@@ -18,19 +18,19 @@ void Game::read_user_input()
         case View::Playing:
             switch (key)
             {
-                case KEY_UP: // UP
+                case KEY_UP: 
                     if (cursor_position.row > 0)
                         cursor_position.row--;
                     break;
-                case KEY_DOWN: // DOWN
+                case KEY_DOWN:
                     if (cursor_position.row < 8)
                         cursor_position.row++;
                     break;
-                case KEY_LEFT: // LEFT
+                case KEY_LEFT:
                     if (cursor_position.column > 0)
                         cursor_position.column--;
                     break;
-                case KEY_RIGHT: // RIGHT
+                case KEY_RIGHT:
                     if (cursor_position.column < 8)
                         cursor_position.column++;
                     break;
@@ -139,8 +139,8 @@ void Game::refresh_display()
                    {
                        for (int col = 0; col < 3; col++)
                        {
-                           Color color = board.get_colors()[3 * brow + row][3 * bcol + col];
-                           int number = board.get_numbers()[3 * brow + row][3 * bcol + col];
+                           Color color = board.get_colors().at(3 * brow + row).at(3 * bcol + col);
+                           int number = board.get_numbers().at(3 * brow + row).at(3 * bcol + col);
                            int ypos = 2 + 5 * brow + row;
                            int xpos = 1 + 14 * bcol + 4 * col;
                            
@@ -171,8 +171,8 @@ void Game::refresh_display()
            // 3. korak
            if (cursor_position.column < 9) // Na nekom od brojeva, ne na button-u sa strane
            {
-               Color color = board.get_colors()[cursor_position.row][cursor_position.column];
-               int number = board.get_numbers()[cursor_position.row][cursor_position.column];
+               Color color = board.get_colors().at(cursor_position.row).at(cursor_position.column);
+               int number = board.get_numbers().at(cursor_position.row).at(cursor_position.column);
                int ypos = 2 + 5 * (cursor_position.row / 3) + (cursor_position.row % 3);
                int xpos = 1 + 14 * (cursor_position.column / 3) + 4 *  (cursor_position.column % 3);
 

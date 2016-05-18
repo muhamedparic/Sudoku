@@ -3,6 +3,17 @@
 Board::Board()
 {
     won = finished = false;
+    
+    // Inicijalizacija boja i brojeva na neku vrijednost
+    // Vjerovatno nece trebati u krajnjoj verziji
+    std::array<int, 9> empty_number;
+    empty_number.fill(0);
+    current_state.fill(empty_number);
+    solved_state.fill(empty_number);
+    
+    std::array<Color, 9> empty_color;
+    empty_color.fill(Color::White);
+    colors.fill(empty_color);
 }
 
 void Board::load_from_json(std::string json_string)
