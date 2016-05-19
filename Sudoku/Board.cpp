@@ -14,12 +14,6 @@ Board::Board()
     std::array<Color, 9> empty_color;
     empty_color.fill(Color::White);
     colors.fill(empty_color);
-
-    // DEBUG
-    colors.at(0).at(0) = Color::Yellow;
-    colors.at(0).at(1) = Color::Green;
-    colors.at(0).at(2) = Color::Red;
-    //
 }
 
 void Board::load_from_json(std::string json_string)

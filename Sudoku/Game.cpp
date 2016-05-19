@@ -10,8 +10,8 @@
 
 void Game::read_user_input()
 {
-	wchar_t key_raw = getch(); // Move to move_cursor
-    if (key_raw == 'q') //
+	wchar_t key_raw = getch();
+    if (key_raw == 'q') // DEBUG
         quit();
     
     Key key;
@@ -36,7 +36,7 @@ void Game::read_user_input()
             case KEY_RIGHT:
                 key = Key::Right;
                 break;
-            case KEY_ENTER: // Mozda nece raditi
+            case 10: // Mozda nece raditi
                 key = Key::Enter;
                 break;
             case 'q':
@@ -48,7 +48,43 @@ void Game::read_user_input()
         }
     }
     move_cursor(key);
-    // TODO: Klikovi na dugmad
+    
+    // Klikovi na dugmad
+    if (key == Key::Enter)
+    {
+        switch (current_view)
+        {
+            case View::Playing:
+                if (cursor_position.column == 9)
+                {
+                    switch (cursor_position.row)
+                    {
+                        case 0:
+                            current_view = View::SelectDifficulty;
+                            break;
+                        case 1:
+                            board.solve();
+                            break;
+                        case 2:
+                            current_view = View::HighScores;
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case View::SelectDifficulty:
+                break;
+            default:
+                break;    
+        }
+    }
+
+    if (key == Key::Esc) // TODO: Implementirati escape key funkcionalnost
+    {    
+    }
 }
 
 void Game::load_views()
@@ -80,6 +116,7 @@ void Game::refresh_display()
 	const char *raw_text_difficulty[] = {
     "    Trivial    ",
     "   Very easy   ",
+    "  Challenging  ",
     " Somewhat evil ",
     " Insanely evil "};
     
@@ -114,7 +151,7 @@ void Game::refresh_display()
            mvprintw(0, 0, "%s", select_difficulty_view.c_str());
            // 3. korak
            attron(COLOR_PAIR(1)); // Crni tekst sa bijelim backgroundom
-           mvprintw(2 + 2 * cursor_position.row, 2, "%s", button_text[current_view][cursor_position.row].c_str());
+           mvprintw(2 + 2 * cursor_position.row, 2, "%s", button_text[current_view].at(cursor_position.row).c_str());
            attroff(COLOR_PAIR(1));
            break;
        case View::InputName:
@@ -137,6 +174,8 @@ void Game::refresh_display()
                        {
                            Color color = board.get_colors().at(3 * brow + row).at(3 * bcol + col);
                            int number = board.get_numbers().at(3 * brow + row).at(3 * bcol + col);
+                           if (!number)
+                               continue;
                            int ypos = 2 + 5 * brow + row;
                            int xpos = 1 + 14 * bcol + 4 * col;
                            
@@ -176,7 +215,10 @@ void Game::refresh_display()
                {
                    case Color::White:
                        attron(COLOR_PAIR(1));
-                       mvprintw(ypos, xpos, "%d", number);
+                       if (number)
+                           mvprintw(ypos, xpos, "%d", number);
+                       else
+                           mvprintw(ypos, xpos, " ");
                        attroff(COLOR_PAIR(1));
                        break;
                    case Color::Yellow:
@@ -204,7 +246,9 @@ void Game::refresh_display()
                attroff(COLOR_PAIR(1));
            }
            break;
-       case View::HighScores:
+       case View::HighScores: // TODO: Zavrsiti prikaz najboljih rezultata
+           // 1. korak
+           mvprintw(0, 0, "%s", high_scores_view.c_str());
            break;    
    }
    refresh();
@@ -335,14 +379,23 @@ void Game::run()
 
     load_views();
 	//current_view = View::SelectDifficulty;
-	current_view = View::Playing;
+    current_view = View::Playing;
     cursor_position.row = cursor_position.column = 0;
-
-	while (true)
-	{
-		refresh_display();
-		read_user_input();
-	}
+    
+    try // DEBUG
+    {
+	    while (true)
+	    {
+		    refresh_display();
+		    read_user_input();
+	    }
+    }
+    catch (...)
+    {
+        endwin();
+        printf("Nekakav problem");
+        exit(0);
+    }
 }
 
 void Game::quit()
