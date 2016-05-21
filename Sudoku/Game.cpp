@@ -18,7 +18,7 @@ void Game::read_user_input()
     
     Key key;
 
-    if (key_raw >= '0' && key_raw <= '9')
+    if (current_view == View::Playing && key_raw >= '0' && key_raw <= '9')
     {
         board.input(cursor_position.row, cursor_position.column, key_raw - '0');
     }
@@ -74,7 +74,6 @@ void Game::read_user_input()
                             cursor_position.column = difficulty;
                             break;
                         case 3:
-                            board.save();
                             quit();
                             break;
                         default:
@@ -200,7 +199,7 @@ void Game::refresh_display()
            // 1. korak
            mvprintw(0, 0, "%s", input_name_view.c_str());
            std::cin >> name;
-           high_score_table.add(difficulty, difftime(time(NULL), name);
+           high_score_table.add(difficulty, difftime(start_time, time(NULL)), name);
            current_view = View::HighScores;
            cursor_position.row = 0;
            cursor_position.column = difficulty;           
@@ -411,6 +410,7 @@ Game::Game(int argc, char **argv)
 
 void Game::check_win_conditions()
 {
+    board.check_win_conditions();
     if (board.game_won())
     {
         auto time_now = time(NULL);

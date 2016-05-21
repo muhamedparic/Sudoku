@@ -2,11 +2,13 @@
 #define HIGHSCORETABLE_HPP_INCLUDED
 
 #include <string>
+#include <vector>
 
 class HighScoreTable
 {
     const int scores_saved = 10;
-    const std::string filename;
+    std::vector<int> times;
+    std::vector<std::string> names;
 
 public:
 
