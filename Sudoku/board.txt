@@ -1,0 +1,1 @@
+{"identified":false,"_links":{"user":"https://api.twitch.tv/kraken/user","channel":"https://api.twitch.tv/kraken/channel","search":"https://api.twitch.tv/kraken/search","streams":"https://api.twitch.tv/kraken/streams","ingests":"https://api.twitch.tv/kraken/ingests","teams":"https://api.twitch.tv/kraken/teams"},"token":{"valid":false,"authorization":null}}

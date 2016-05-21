@@ -6,11 +6,13 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <cstdio>
+
 #include <ncurses.h>
 
 void Game::read_user_input()
 {
-	wchar_t key_raw = getch();
+    wchar_t key_raw = getch();
     if (key_raw == 'q') // DEBUG
         quit();
     
@@ -36,7 +38,7 @@ void Game::read_user_input()
             case KEY_RIGHT:
                 key = Key::Right;
                 break;
-            case 10: // Mozda nece raditi
+            case 10: // NOTE: Mozda nece raditi
                 key = Key::Enter;
                 break;
             case 'q':
@@ -61,14 +63,19 @@ void Game::read_user_input()
                     {
                         case 0:
                             current_view = View::SelectDifficulty;
+                            cursor_position.row = cursor_position.column = 0;
                             break;
                         case 1:
                             board.solve();
                             break;
                         case 2:
                             current_view = View::HighScores;
+                            cursor_position.row = 0;
+                            cursor_position.column = difficulty;
                             break;
                         case 3:
+                            board.save();
+                            quit();
                             break;
                         default:
                             break;
@@ -76,14 +83,49 @@ void Game::read_user_input()
                 }
                 break;
             case View::SelectDifficulty:
+                difficulty = cursor_position.row;
+                fetch_board(difficulty);
+                current_view = View::Playing;
+                cursor_position.row = cursor_position.column = 0;
                 break;
             default:
                 break;    
         }
     }
 
-    if (key == Key::Esc) // TODO: Implementirati escape key funkcionalnost
-    {    
+    if (key == Key::Esc)
+    {
+        switch (current_view)
+        {
+            case View::HighScores:
+                current_view = View::Playing;
+                cursor_position.row = cursor_position.column = 0;
+                break;
+            case View::Playing:
+                cursor_position.row = 3;
+                cursor_position.column = 9;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Game::fetch_board(int difficulty)
+{
+    // NOTE: python ili python3
+    system((std::string("python3 ") + server_ip + std::string(" ") + std::string(difficulty + '0', 1)).c_str());
+    try
+    {
+        std::ifstream fin("board.txt");
+        std::string input;
+        fin >> input;
+        board.load_from_string(input);
+        std::remove("board.txt");
+    }
+    catch (...)
+    {
+        throw std::domain_error("Board fetch problem!");
     }
 }
 
@@ -138,9 +180,9 @@ void Game::refresh_display()
         std::vector<std::string>(raw_text_difficulty, std::end(raw_text_difficulty));
 
     // Crtanje se vrsi u 3 koraka:
-    // Crtanje view-a (backgrounda)
-    // Crtanje dodatnih elemenata (score-ova, brojeva na ploci)
-    // Crtanje selektovanog elementa (invertovane boje teksta i backgrounda)
+    // 1. Crtanje view-a (backgrounda)
+    // 2. Crtanje dodatnih elemenata (score-ova, brojeva na ploci)
+    // 3. Crtanje selektovanog elementa (invertovane boje teksta i backgrounda)
     
    clear();
    std::string name; 
@@ -158,7 +200,10 @@ void Game::refresh_display()
            // 1. korak
            mvprintw(0, 0, "%s", input_name_view.c_str());
            std::cin >> name;
-           // TODO: Poslati ime na leaderboard
+           high_score_table.add(difficulty, difftime(time(NULL), name);
+           current_view = View::HighScores;
+           cursor_position.row = 0;
+           cursor_position.column = difficulty;           
            break;
        case View::Playing:
            // 1. korak
@@ -246,9 +291,15 @@ void Game::refresh_display()
                attroff(COLOR_PAIR(1));
            }
            break;
-       case View::HighScores: // TODO: Zavrsiti prikaz najboljih rezultata
+       case View::HighScores:
            // 1. korak
            mvprintw(0, 0, "%s", high_scores_view.c_str());
+           // 2. korak
+           mvprintw(4, 0, "%s", high_score_table.get(cursor_position.row + 1).c_str());
+           // 3. korak
+           attron(COLOR_PAIR(1));
+           mvprintw(1, 1 + 18 * cursor_position.column, "%s", button_text[View::HighScores][cursor_position.column].c_str());
+           attroff(COLOR_PAIR(1));
            break;    
    }
    refresh();
@@ -358,6 +409,20 @@ Game::Game(int argc, char **argv)
     }
 }
 
+void Game::check_win_conditions()
+{
+    if (board.game_won())
+    {
+        auto time_now = time(NULL);
+        unsigned int play_time = difftime(time_now, start_time);
+
+        if (high_score_table.is_on_leaderboard(difficulty, play_time))
+        {
+            current_view = View::InputName;
+        }
+    }
+}
+
 void Game::run()
 {
 	// ncurses inicijalizacija
@@ -381,13 +446,15 @@ void Game::run()
 	//current_view = View::SelectDifficulty;
     current_view = View::Playing;
     cursor_position.row = cursor_position.column = 0;
+    start_time = time(NULL);
     
-    try // DEBUG
+    try
     {
 	    while (true)
 	    {
 		    refresh_display();
 		    read_user_input();
+            check_win_conditions();
 	    }
     }
     catch (...)

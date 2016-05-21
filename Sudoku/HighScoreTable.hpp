@@ -10,7 +10,7 @@ class HighScoreTable
 
 public:
 
-    HighScoreTable(std::string filename = "highscores.json");
+    HighScoreTable(std::string filename = "highscores.txt");
     bool is_on_leaderboard(int difficulty, int time);
     void add(int difficulty, int time, std::string name);
     std::string get(int difficulty);

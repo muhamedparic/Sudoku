@@ -9,6 +9,7 @@
 
 #include <string>
 #include <array>
+#include <ctime>
 
 class Game
 {
@@ -20,11 +21,16 @@ class Game
     } cursor_position;
     View current_view;
     std::string playing_view, input_name_view, high_scores_view, select_difficulty_view;
+    HighScoreTable high_score_table;
+    time_t start_time;
+    int difficulty;
 
+    void fetch_board(int difficulty);
     void read_user_input();
     void load_views();
     void refresh_display();
     void move_cursor(Key key);
+    void check_win_conditions();
     void quit();
 
 public:

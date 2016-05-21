@@ -18,12 +18,13 @@ class Board
     SudokuGrid<Color> colors;
 
     bool input_legal(int row, int column);
+    std::string encrypt_decrypt(std::string input);
 
 public:
 
     Board();
-    void load_from_json(std::string json_string);
-    void load_from_file(std::string filename = "save.json");
+    void load_from_string(std::string board_string);
+    void load_from_file(std::string filename = "save.txt");
     bool game_won();
     bool game_finished();
     std::vector<int> get_legal_inputs(int row, int column);
@@ -31,7 +32,7 @@ public:
     const SudokuGrid<int> &get_numbers();
     const SudokuGrid<Color> &get_colors();
     void input(int row, int column, int number);
-    void save(std::string filename = "save.json");
+    void save(std::string filename = "save.txt");
 };
 
 #endif // BOARD_HPP_INCLUDED

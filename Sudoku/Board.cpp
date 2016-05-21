@@ -16,7 +16,7 @@ Board::Board()
     colors.fill(empty_color);
 }
 
-void Board::load_from_json(std::string json_string)
+void Board::load_from_string(std::string board_string)
 {
 
 }
@@ -67,6 +67,11 @@ void Board::save(std::string filename)
 }
 
 bool Board::input_legal(int row, int column)
+{
+
+}
+
+std::string encrypt_decrypt(std::string input)
 {
 
 }
