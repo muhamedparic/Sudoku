@@ -29,15 +29,39 @@ void Board::load_from_string(std::string board_string)
     {
         for (int j = 0; j < 9; j++)
         {
-            current_state.at(i).at(j) = board_string.at(9 * i + j);
-            solved_state.at(i).at(j) = board_string.at(81 + 9 * i + j);
+            current_state.at(i).at(j) = board_string.at(9 * i + j) - '0';
+            solved_state.at(i).at(j) = board_string.at(81 + 9 * i + j) - '0';
         }
     }
+
+    won = finished = false;
+    std::array<Color, 9> empty_color;
+    empty_color.fill(Color::White);
+    colors.fill(empty_color);
 }
 
 void Board::check_win_conditions()
 {
+    if (finished)
+        return;
 
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (current_state[i][j] == 0 || colors[i][j] == Color::Red)
+                return;
+        }
+    }
+
+    won = true;
+    finished = true;
+
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+            colors[i][j] = (colors[i][j] == Color::White) ? Color::White : Color::Green;
+    }
 }
 
 bool Board::game_finished()
@@ -57,10 +81,10 @@ void Board::solve()
     for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
-        {
-            current_state.at(i).at(j) = solved_state.at(i).at(j);
-            if (colors.at(i).at(j) != Color::White)
+        { 
+            if (colors.at(i).at(j) != Color::White || !current_state.at(i).at(j))
                 colors.at(i).at(j) = Color::Green;
+            current_state.at(i).at(j) = solved_state.at(i).at(j);
         }
     }
 }
@@ -75,13 +99,16 @@ const SudokuGrid<Color> &Board::get_colors()
     return colors;
 }
 
-void Board::input(int row, int column, int number) // NOTE: Provjeriti validnost reda i kolone
+void Board::input(int row, int column, int number)
 {
     if (finished)
         return;
 
-    if (row >= 0 && column >= 0 && row < 9 && column < 9 && colors.at(row).at(column) != Color::White)
+    if (row >= 0 && column >= 0 && row < 9 && column < 9 && (colors.at(row).at(column) != Color::White || !current_state[row][column]))
+    {   
         current_state.at(row).at(column) = number;
+        colors[row][column] = Color::Yellow;
+    }
 
     reevaluate();
 }
@@ -109,8 +136,8 @@ void Board::reevaluate()
                     break;
                 }
 
-                int r = i / 3 + k / 3;
-                int c = j / 3 + k % 3;
+                int r = i - i % 3 + k / 3;
+                int c = j - j % 3 + k % 3;
 
                 if ((r != i || c != j) && current_state.at(r).at(c) == current_state.at(i).at(j))
                 {
@@ -118,6 +145,9 @@ void Board::reevaluate()
                     break;
                 }
             }
+
+            if (colors.at(i).at(j) != Color::Red)
+                colors.at(i).at(j) = Color::Yellow;
         }
     }
 }

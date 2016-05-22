@@ -13,12 +13,10 @@
 void Game::read_user_input()
 {
     wchar_t key_raw = getch();
-    if (key_raw == 'q') // DEBUG
-        quit();
     
     Key key;
 
-    if (current_view == View::Playing && key_raw >= '0' && key_raw <= '9')
+    if (current_view == View::Playing && key_raw > '0' && key_raw <= '9')
     {
         board.input(cursor_position.row, cursor_position.column, key_raw - '0');
     }
@@ -113,14 +111,14 @@ void Game::read_user_input()
 void Game::fetch_board(int difficulty)
 {
     // NOTE: python ili python3
-    system((std::string("python3 ") + server_ip + std::string(" ") + std::string(difficulty + '0', 1)).c_str());
+    //system((std::string("python3 ") + server_ip + std::string(" ") + std::string(difficulty + '0', 1)).c_str()); DEBUG
     try
     {
         std::ifstream fin("board.txt");
         std::string input;
         fin >> input;
         board.load_from_string(input);
-        std::remove("board.txt");
+        // std::remove("board.txt"); DEBUG
     }
     catch (...)
     {
@@ -165,7 +163,7 @@ void Game::refresh_display()
     "     New     ",
     "    Solve    ",
     " High scores ",
-    " Save & Quit "};
+    "   Abandon   "};
     
     std::map<View, std::vector<std::string>> button_text;
     
@@ -254,32 +252,38 @@ void Game::refresh_display()
                int number = board.get_numbers().at(cursor_position.row).at(cursor_position.column);
                int ypos = 2 + 5 * (cursor_position.row / 3) + (cursor_position.row % 3);
                int xpos = 1 + 14 * (cursor_position.column / 3) + 4 *  (cursor_position.column % 3);
-
-               switch (color)
+               
+               if (color == Color::White || !number)
                {
-                   case Color::White:
-                       attron(COLOR_PAIR(1));
-                       if (number)
+                   attron(COLOR_PAIR(1));
+                   if (number)
+                       mvprintw(ypos, xpos, "%d", number);
+                   else
+                       mvprintw(ypos, xpos, " ");
+                   attroff(COLOR_PAIR(1));
+               }
+               else
+               {
+                   switch (color)
+                   {
+                       case Color::Yellow:
+                           attron(COLOR_PAIR(7));
                            mvprintw(ypos, xpos, "%d", number);
-                       else
-                           mvprintw(ypos, xpos, " ");
-                       attroff(COLOR_PAIR(1));
-                       break;
-                   case Color::Yellow:
-                       attron(COLOR_PAIR(7));
-                       mvprintw(ypos, xpos, "%d", number);
-                       attroff(COLOR_PAIR(7));
-                       break;
-                   case Color::Red:
-                       attron(COLOR_PAIR(3));
-                       mvprintw(ypos, xpos, "%d", number);
-                       attroff(COLOR_PAIR(3));
-                       break;
-                   case Color::Green:
-                       attron(COLOR_PAIR(5));
-                       mvprintw(ypos, xpos, "%d", number);
-                       attroff(COLOR_PAIR(5));
-                       break;
+                           attroff(COLOR_PAIR(7));
+                           break;
+                       case Color::Red:
+                           attron(COLOR_PAIR(3));
+                           mvprintw(ypos, xpos, "%d", number);
+                           attroff(COLOR_PAIR(3));
+                           break;
+                       case Color::Green:
+                           attron(COLOR_PAIR(5));
+                           mvprintw(ypos, xpos, "%d", number);
+                           attroff(COLOR_PAIR(5));
+                           break;
+                       default:
+                           break;
+                   }
                }
            }
            else // Na button-u
@@ -443,8 +447,8 @@ void Game::run()
     init_pair(7, 6, COLOR_WHITE); // Inverovana zuta
 
     load_views();
-	//current_view = View::SelectDifficulty;
-    current_view = View::Playing;
+	current_view = View::SelectDifficulty;
+    //current_view = View::Playing;
     cursor_position.row = cursor_position.column = 0;
     start_time = time(NULL);
     
