@@ -1,1 +1,1 @@
-g++ *.hpp *.cpp -o Sudoku -lncurses -Wall -std=c++11
+g++ *.hpp *.cpp -o Sudoku -lncurses -Wall -std=c++11 -O3

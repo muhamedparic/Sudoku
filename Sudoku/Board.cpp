@@ -121,6 +121,8 @@ void Board::reevaluate()
         {
             if (current_state.at(i).at(j) == 0 || colors.at(i).at(j) == Color::White)
                 continue;
+
+            colors[i][j] = Color::Yellow;
            
             for (int k = 0; k < 9; k++)
             {

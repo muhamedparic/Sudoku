@@ -14,7 +14,7 @@ void Game::read_user_input()
 {
     wchar_t key_raw = getch();
     
-    Key key;
+    Key key = Key::Key1; // Key1, Key2... su neiskoristeni i trenutno nemaju svrhe
 
     if (current_view == View::Playing && key_raw > '0' && key_raw <= '9')
     {
