@@ -16,7 +16,7 @@ class Board
     SudokuGrid<int> current_state;
     SudokuGrid<int> solved_state;
     SudokuGrid<Color> colors;
-
+    
     void reevaluate();
 
 public:

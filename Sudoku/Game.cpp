@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdio>
+#include <algorithm>
 
 #include <ncurses.h>
 
@@ -183,6 +184,7 @@ void Game::refresh_display()
     
    clear();
    std::string name; 
+   long int time_now;
    switch (current_view)
    {
        case View::SelectDifficulty:
@@ -195,9 +197,12 @@ void Game::refresh_display()
            break;
        case View::InputName:
            // 1. korak
+           time_now = time(NULL);
            mvprintw(0, 0, "%s", input_name_view.c_str());
            std::cin >> name;
-           high_score_table.add(difficulty, difftime(start_time, time(NULL)), name);
+           name = name.substr(0, 20);
+           std::replace(name.begin(), name.end(), ' ', '_');
+           high_score_table.add(difficulty, difftime(start_time, time_now), name);
            current_view = View::HighScores;
            cursor_position.row = 0;
            cursor_position.column = difficulty;           
@@ -471,6 +476,7 @@ void Game::run()
 
 void Game::quit()
 {
-	endwin();
+	high_score_table.save();
+    endwin();
 	exit(0);
 }

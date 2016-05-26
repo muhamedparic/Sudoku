@@ -3,12 +3,19 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 class HighScoreTable
 {
     const int scores_saved = 10;
-    std::vector<int> times;
-    std::vector<std::string> names;
+    
+    struct TableEntry
+    {
+        int time;
+        std::string name;
+    };
+
+    std::array<std::vector<TableEntry>, 5> records;
 
 public:
 
@@ -16,6 +23,7 @@ public:
     bool is_on_leaderboard(int difficulty, int time);
     void add(int difficulty, int time, std::string name);
     std::string get(int difficulty);
+    void save(std::string filename = "highscores.txt");
 };
 
 #endif // HIGHSCORETABLE_HPP_INCLUDED
