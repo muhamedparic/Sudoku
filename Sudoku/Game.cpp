@@ -83,6 +83,7 @@ void Game::read_user_input()
             case View::SelectDifficulty:
                 difficulty = cursor_position.row;
                 fetch_board(difficulty);
+				start_time = time(NULL);
                 current_view = View::Playing;
                 cursor_position.row = cursor_position.column = 0;
                 break;
