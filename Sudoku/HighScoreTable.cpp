@@ -2,16 +2,17 @@
 
 #include <algorithm>
 #include <fstream>
+#include <fstream>
 
 HighScoreTable::HighScoreTable(std::string filename)
 {
     std::ifstream fin(filename);
 
-    if (!fin.is_open())
+    if (!fin.good())
     {
-        std::for_each(records.begin(), records.end(), [=](std::vector<TableEntry> diff)
+        std::for_each(records.begin(), records.end(), [=](std::vector<TableEntry> &diff)
             {
-                const TableEntry te{0, "0"};
+                const TableEntry te{infinity, "0"};
                 diff = std::vector<TableEntry>(scores_saved, te);
             });
         fin.close();
@@ -23,8 +24,7 @@ HighScoreTable::HighScoreTable(std::string filename)
             int time;
             std::string name;
             fin >> name >> time;
-            if (time)
-                records.at(i / 5).push_back({time, name});
+            records.at(i / 10).push_back({time, name});
         }
 
         fin.close();
@@ -33,7 +33,7 @@ HighScoreTable::HighScoreTable(std::string filename)
 
 bool HighScoreTable::is_on_leaderboard(int difficulty, int time)
 {
-   return (records.at(difficulty).size()) ? (records.at(difficulty).back().time > time) : true;
+    return records.at(difficulty).back().time > time;
 }
 
 void HighScoreTable::add(int difficulty, int time, std::string name)
@@ -52,12 +52,15 @@ std::string HighScoreTable::get(int difficulty)
 
     for (auto entry : records.at(difficulty))
     {
+        if (entry.time == infinity)
+            continue;
+
         table += entry.name;
         table += std::string(' ', 25 - entry.name.length());
         char time[10];
         sprintf(time, "%d", entry.time);
         table += std::string(time);
-        table += std::string('\n', 1);
+        table += std::string("\n");
     }
 
     return table;
@@ -71,8 +74,6 @@ void HighScoreTable::save(std::string filename)
    {
        for (auto rec : diff)
            fout << rec.name << ' ' << rec.time << '\n';
-       for (int i = 0; i < (int)(scores_saved - diff.size()); i++)
-           fout << "0 0\n";
    }
 
    fout.close();

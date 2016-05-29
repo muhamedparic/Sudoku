@@ -111,8 +111,8 @@ void Board::input(int row, int column, int number)
     }
 
     reevaluate();
-}
 
+}
 void Board::reevaluate()
 {
     for (int i = 0; i < 9; i++)

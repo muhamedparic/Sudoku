@@ -8,7 +8,8 @@
 class HighScoreTable
 {
     const int scores_saved = 10;
-    
+    const int infinity = 1 << 30;
+
     struct TableEntry
     {
         int time;

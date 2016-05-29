@@ -83,7 +83,6 @@ void Game::read_user_input()
             case View::SelectDifficulty:
                 difficulty = cursor_position.row;
                 fetch_board(difficulty);
-				start_time = time(NULL);
                 current_view = View::Playing;
                 cursor_position.row = cursor_position.column = 0;
                 break;
@@ -184,8 +183,10 @@ void Game::refresh_display()
     // 3. Crtanje selektovanog elementa (invertovane boje teksta i backgrounda)
     
    clear();
-   std::string name; 
+   std::string name;
+   char c_name [50]; 
    long int time_now;
+   int ch;
    switch (current_view)
    {
        case View::SelectDifficulty:
@@ -199,14 +200,30 @@ void Game::refresh_display()
        case View::InputName:
            // 1. korak
            time_now = time(NULL);
-           mvprintw(0, 0, "%s", input_name_view.c_str());
-           std::cin >> name;
-           name = name.substr(0, 20);
-           std::replace(name.begin(), name.end(), ' ', '_');
-           high_score_table.add(difficulty, difftime(start_time, time_now), name);
+           //mvprintw(0, 0, "%s", input_name_view.c_str());
+           //refresh();
+           
+           //echo();
+           //ch = getch();
+
+           //while (ch != '\n')
+           //{
+             //  name.push_back(ch);
+              // ch = getch();
+           //}
+           //noecho();
+           
+           //scanw(0, 12, "%s", c_name);
+
+           name = "Muhamed";
+           //name = std::string(c_name);
+           //name = name.substr(0, 20);
+           //std::replace(name.begin(), name.end(), ' ', '_');
+           high_score_table.add(difficulty, difftime(time_now, start_time), name);
            current_view = View::HighScores;
            cursor_position.row = 0;
            cursor_position.column = difficulty;           
+           refresh_display();
            break;
        case View::Playing:
            // 1. korak
@@ -304,7 +321,7 @@ void Game::refresh_display()
            // 1. korak
            mvprintw(0, 0, "%s", high_scores_view.c_str());
            // 2. korak
-           mvprintw(4, 0, "%s", high_score_table.get(cursor_position.row + 1).c_str());
+           mvprintw(4, 0, "%s", high_score_table.get(cursor_position.column).c_str());
            // 3. korak
            attron(COLOR_PAIR(1));
            mvprintw(1, 1 + 18 * cursor_position.column, "%s", button_text[View::HighScores][cursor_position.column].c_str());
