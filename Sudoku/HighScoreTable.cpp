@@ -56,7 +56,7 @@ std::string HighScoreTable::get(int difficulty)
             continue;
 
         table += entry.name;
-        table += std::string(' ', 25 - entry.name.length());
+        table += std::string(25 - entry.name.length(), ' '); 
         char time[10];
         sprintf(time, "%d", entry.time);
         table += std::string(time);

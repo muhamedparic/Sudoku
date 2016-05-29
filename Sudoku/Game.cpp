@@ -14,7 +14,7 @@
 void Game::read_user_input()
 {
     wchar_t key_raw = getch();
-    
+
     Key key = Key::Key1; // Key1, Key2... su neiskoristeni i trenutno nemaju svrhe
 
     if (current_view == View::Playing && key_raw > '0' && key_raw <= '9')
@@ -85,6 +85,7 @@ void Game::read_user_input()
                 fetch_board(difficulty);
                 current_view = View::Playing;
                 cursor_position.row = cursor_position.column = 0;
+                start_time = time(NULL);
                 break;
             default:
                 break;    
@@ -184,7 +185,6 @@ void Game::refresh_display()
     
    clear();
    std::string name;
-   char c_name [50]; 
    long int time_now;
    int ch;
    switch (current_view)
@@ -199,31 +199,33 @@ void Game::refresh_display()
            break;
        case View::InputName:
            // 1. korak
-           time_now = time(NULL);
-           //mvprintw(0, 0, "%s", input_name_view.c_str());
-           //refresh();
            
-           //echo();
-           //ch = getch();
+           time_now = time(NULL);
+           mvprintw(0, 0, "%s", input_name_view.c_str());
+           refresh();
+           
+           echo();
+           ch = getch();
 
-           //while (ch != '\n')
-           //{
-             //  name.push_back(ch);
-              // ch = getch();
-           //}
-           //noecho();
+           while (ch != '\n')
+           {
+               name.push_back(ch);
+               ch = getch();
+           }
+           noecho();
            
            //scanw(0, 12, "%s", c_name);
 
-           name = "Muhamed";
+           //name = "Muhamed";
            //name = std::string(c_name);
-           //name = name.substr(0, 20);
-           //std::replace(name.begin(), name.end(), ' ', '_');
+           name = name.substr(0, 20);
+           std::replace(name.begin(), name.end(), ' ', '_'); 
            high_score_table.add(difficulty, difftime(time_now, start_time), name);
            current_view = View::HighScores;
            cursor_position.row = 0;
            cursor_position.column = difficulty;           
            refresh_display();
+           
            break;
        case View::Playing:
            // 1. korak
@@ -263,6 +265,7 @@ void Game::refresh_display()
                                    attron(COLOR_PAIR(4));
                                    mvprintw(ypos, xpos, "%d", number);
                                    attroff(COLOR_PAIR(4));
+                                   break;
                            }                
                        }
                    }
@@ -481,7 +484,9 @@ void Game::run()
 	    {
 		    refresh_display();
 		    read_user_input();
-            check_win_conditions();
+            
+            if (!board.game_won())
+                check_win_conditions();
 	    }
     }
     catch (...)
