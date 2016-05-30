@@ -113,7 +113,7 @@ void Game::read_user_input()
 void Game::fetch_board(int difficulty)
 {
     // NOTE: python ili python3
-    //system((std::string("python3 ") + server_ip + std::string(" ") + std::string(difficulty + '0', 1)).c_str()); DEBUG
+    //system((std::string("python3 ") + server_ip + std::string(" ") + std::string(1, difficulty + '0')).c_str()); DEBUG
     try
     {
         std::ifstream fin("board.txt");
